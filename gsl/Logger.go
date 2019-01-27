@@ -163,7 +163,7 @@ func (l *Logger) Fatal(obj interface{}) {
 		w.Flush() // #nosec
 	}
 	if position, ok := l.levels["error"]; ok {
-		l.WriteLine("fatal", obj, l.writers[position], l.formats[position])
+		l.WriteLine("fatal", obj, l.writers[position], l.formats[position]) // #nosec
 	}
 	for _, w := range l.writers {
 		w.Flush() // #nosec
