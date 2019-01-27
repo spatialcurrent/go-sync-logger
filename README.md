@@ -4,12 +4,11 @@
 
 # Description
 
-**go-sync-logger** (aka GRW) is a simple library for safely using
+**go-sync-logger** (aka GSL) is a simple concurrency-safe library for sharing writers (e.g., stdout, errors.log, etc.) among multiple log levels.  With **GSL** you can have `info` and `error` messages share a log with messages being written in the proper sequence.
 
-
-reading/writing of resources.  GRW can read from `bzip2`, `gzip`, `snappy`, and `zip` resources and write to `gzip` and `snappy` resources.
-
-Using cross compilers, this library can also be called by other languages.  This library is cross compiled into a Shared Object file (`*.so`).  The Shared Object file can be called by `C`, `C++`, and `Python` on Linux machines.  See the examples folder for patterns that you can use.  This library is also compiled to pure `JavaScript` using [GopherJS](https://github.com/gopherjs/gopherjs).
+ **go-sync-logger** depends on:
+- [go-reader-writer](https://github.com/spatialcurrent/go-reader-writer) for writing to arbitrary locations.
+- [go-simple-serializer](https://github.com/spatialcurrent/go-simple-serializer) for serializing log messages.
 
 # Usage
 
@@ -20,31 +19,22 @@ You can import **go-sync-logger** as a library with:
 ```go
 import (
   "github.com/spatialcurrent/go-sync-logger/gsl"
-  "github.com/spatialcurrent/go-reader-writer/grw"
 )
-...
+```
 
+To initialize the logger, use `gsl.NewLogger` and pass it the writers, formats, and proper mapping of levels to writers.  For example, the configuration below, has `error` and `warn` share a writer.
+
+```go
 ... () {
-  errorWriter, err := grw.WriteToResource(errorDestination, errorCompression, true, s3_client)
-	if err != nil {
-		fmt.Println(errors.Wrap(err, "error creating error writer"))
-		os.Exit(1)
-	}
-
-	infoWriter, err := grw.WriteToResource(infoDestination, infoCompression, true, s3_client)
-	if err != nil {
-		errorWriter.WriteError(errors.Wrap(err, "error creating log writer")) // #nosec
-		errorWriter.Close()                                                   // #nosec
-		os.Exit(1)
-	}
-
-	logger := gsl.NewLogger(
-		map[string]int{"info": 0, "error": 1},
-		[]grw.ByteWriteCloser{infoWriter, errorWriter},
-		[]string{infoFormat, errorFormat},
-	)
+  logger := gsl.NewLogger(
+    map[string]int{"info": 0, "error": 1, "warn": 1},
+    []grw.ByteWriteCloser{infoWriter, errorWriter},
+    []string{infoFormat, errorFormat},
+  )
 }
 ```
+
+For a complete example on how to initialize the logger using configuration provided by [viper](https://github.com/spf13/viper) see [viper.md](https://github.com/spatialcurrent/go-sync-logger/tree/master/example/viper.md) in [examples](https://github.com/spatialcurrent/go-sync-logger/tree/master/example).
 
 See [gsl](https://godoc.org/github.com/spatialcurrent/go-sync-logger/gsl) in GoDoc for information on how to use Go API.
 
