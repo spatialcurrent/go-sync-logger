@@ -257,7 +257,13 @@ func (l *Logger) FormatObject(level string, obj interface{}, format string) (str
 		if len(l.TimeStampField) > 0 {
 			m[l.TimeStampField] = time.Now().Format(time.RFC3339)
 		}
-		return gss.SerializeString(m, format, gss.NoHeader, gss.NoLimit)
+		return gss.SerializeString(&gss.SerializeInput{
+			Object: m,
+			Format: format,
+			Header: gss.NoHeader,
+			Limit:  gss.NoLimit,
+			Pretty: false,
+		})
 	} else if msg, ok := obj.(string); ok {
 		m := map[string]interface{}{}
 		if len(l.LevelField) > 0 {
@@ -269,7 +275,13 @@ func (l *Logger) FormatObject(level string, obj interface{}, format string) (str
 		if len(l.TimeStampField) > 0 {
 			m[l.TimeStampField] = time.Now().Format(time.RFC3339)
 		}
-		return gss.SerializeString(m, format, gss.NoHeader, gss.NoLimit)
+		return gss.SerializeString(&gss.SerializeInput{
+			Object: m,
+			Format: format,
+			Header: gss.NoHeader,
+			Limit:  gss.NoLimit,
+			Pretty: false,
+		})
 	} else if m, ok := obj.(map[string]string); ok {
 		if len(l.LevelField) > 0 {
 			m[l.LevelField] = level
@@ -277,7 +289,13 @@ func (l *Logger) FormatObject(level string, obj interface{}, format string) (str
 		if len(l.TimeStampField) > 0 {
 			m[l.TimeStampField] = time.Now().Format(time.RFC3339)
 		}
-		return gss.SerializeString(m, format, gss.NoHeader, gss.NoLimit)
+		return gss.SerializeString(&gss.SerializeInput{
+			Object: m,
+			Format: format,
+			Header: gss.NoHeader,
+			Limit:  gss.NoLimit,
+			Pretty: false,
+		})
 	} else if m, ok := obj.(map[string]interface{}); ok {
 		if len(l.LevelField) > 0 {
 			m[l.LevelField] = level
@@ -285,9 +303,21 @@ func (l *Logger) FormatObject(level string, obj interface{}, format string) (str
 		if len(l.TimeStampField) > 0 {
 			m[l.TimeStampField] = time.Now().Format(time.RFC3339)
 		}
-		return gss.SerializeString(m, format, gss.NoHeader, gss.NoLimit)
+		return gss.SerializeString(&gss.SerializeInput{
+			Object: m,
+			Format: format,
+			Header: gss.NoHeader,
+			Limit:  gss.NoLimit,
+			Pretty: false,
+		})
 	}
-	return gss.SerializeString(obj, format, gss.NoHeader, gss.NoLimit)
+	return gss.SerializeString(&gss.SerializeInput{
+		Object: obj,
+		Format: format,
+		Header: gss.NoHeader,
+		Limit:  gss.NoLimit,
+		Pretty: false,
+	})
 }
 
 // WriteLine formats the given object using FormatObject then writes the formatted string with a trailing newline to the matching grw.ByteWriteCloser and returns an error, if any.
