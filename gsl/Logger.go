@@ -254,7 +254,7 @@ func (l *Logger) FormatObject(level string, obj interface{}, format string) (str
 		if len(l.MessageField) > 0 {
 			m[l.MessageField] = strings.Replace(err.Error(), "\n", ": ", -1)
 		}
-		if len(l.TimeStampField) > 0 {
+		if _, ok := m[l.TimeStampField]; !ok && len(l.TimeStampField) > 0 {
 			m[l.TimeStampField] = time.Now().Format(time.RFC3339)
 		}
 		return gss.SerializeString(&gss.SerializeInput{
