@@ -20,6 +20,17 @@ import (
 	"github.com/spatialcurrent/go-reader-writer/grw"
 )
 
+// CreateApplicationLoggerInput holds the input for the CreateApplicationLogger function..
+type CreateApplicationLoggerInput struct {
+	ErrorDestination string
+	ErrorCompression string
+	ErrorFormat      string
+	InfoDestination  string
+	InfoCompression  string
+	InfoFormat       string
+	Verbose          bool
+}
+
 // CreateApplicationLogger creates a new *Logger given the fields in *CreateApplicationLoggerInput.
 // This function creates a logger that intuitively works as you would expect an application logger to work.
 // The logger shares a single grw.ByteWriteCloser if error and info messages are going to the same location.
@@ -34,7 +45,7 @@ func CreateApplicationLogger(input *CreateApplicationLoggerInput) *Logger {
 	}
 
 	levels := map[string]int{"error": 0, "fatal": 0}
-	writers := []grw.ByteWriteCloser{errorWriter}
+	writers := []Writer{errorWriter}
 	formats := []string{input.ErrorFormat}
 
 	if input.Verbose {
@@ -44,13 +55,19 @@ func CreateApplicationLogger(input *CreateApplicationLoggerInput) *Logger {
 	if len(input.InfoDestination) > 0 && input.InfoDestination != "/dev/null" && input.InfoDestination != "null" {
 		if input.InfoDestination == input.ErrorDestination {
 			if input.InfoFormat != input.ErrorFormat {
-				errorWriter.WriteError(fmt.Errorf("info-format ( %s ) and error-format ( %s ) must match when they share a destination", input.InfoFormat, input.ErrorFormat)) // #nosec
-				errorWriter.Close()                                                                                                                                            // #nosec
+				_, err := errorWriter.WriteError(fmt.Errorf("info-format ( %s ) and error-format ( %s ) must match when they share a destination", input.InfoFormat, input.ErrorFormat)) // #nosec
+				if err != nil {
+					fmt.Println(err.Error())
+				}
+				errorWriter.Close() // #nosec
 				os.Exit(1)
 			}
 			if input.InfoCompression != input.ErrorCompression {
-				errorWriter.WriteError(fmt.Errorf("info-compression ( %s ) and error-compression ( %s ) must match when they share a destination", input.InfoCompression, input.ErrorCompression)) // #nosec
-				errorWriter.Close()                                                                                                                                                                // #nosec
+				_, err := errorWriter.WriteError(fmt.Errorf("info-compression ( %s ) and error-compression ( %s ) must match when they share a destination", input.InfoCompression, input.ErrorCompression)) // #nosec
+				if err != nil {
+					fmt.Println(err.Error())
+				}
+				errorWriter.Close() // #nosec
 				os.Exit(1)
 			}
 
@@ -76,5 +93,6 @@ func CreateApplicationLogger(input *CreateApplicationLoggerInput) *Logger {
 		}
 	}
 
-	return NewLogger(levels, writers, formats)
+	logger := NewLogger(levels, writers, formats, true)
+	return logger
 }
