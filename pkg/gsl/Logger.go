@@ -13,13 +13,9 @@ import (
 	"strings"
 	"sync"
 	"time"
-)
 
-import (
 	"github.com/pkg/errors"
-)
 
-import (
 	"github.com/spatialcurrent/go-simple-serializer/pkg/gss"
 )
 
