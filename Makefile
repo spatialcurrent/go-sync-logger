@@ -36,7 +36,7 @@ fmt:  ## Format Go source code
 
 .PHONY: imports
 imports: ## Update imports in Go source code
-	goimports -w $$(find . -iname '*.go')
+	goimports -w -local github.com/spatialcurrent/go-syc-logger,github.com/spatialcurrent/ $$(find . -iname '*.go')
 
 .PHONY: vet
 vet: ## Vet Go source code

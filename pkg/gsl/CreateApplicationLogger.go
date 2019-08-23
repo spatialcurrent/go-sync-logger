@@ -10,13 +10,9 @@ package gsl
 import (
 	"fmt"
 	"os"
-)
 
-import (
 	"github.com/pkg/errors"
-)
 
-import (
 	"github.com/spatialcurrent/go-reader-writer/pkg/grw"
 )
 

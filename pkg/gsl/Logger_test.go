@@ -12,13 +12,9 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
-)
 
-import (
 	"github.com/stretchr/testify/assert"
-)
 
-import (
 	"github.com/spatialcurrent/go-reader-writer/pkg/grw"
 	"github.com/spatialcurrent/go-simple-serializer/pkg/tags"
 )
