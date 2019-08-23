@@ -5,18 +5,6 @@
 #
 # =================================================================
 
-ifdef GOPATH
-GCFLAGS=-trimpath=$(shell printenv GOPATH)/src
-else
-GCFLAGS=-trimpath=$(shell go env GOPATH)/src
-endif
-
-LDFLAGS=-X main.gitBranch=$(shell git branch | grep \* | cut -d ' ' -f2) -X main.gitCommit=$(shell git rev-list -1 HEAD)
-
-ifndef DEST
-DEST=bin
-endif
-
 .PHONY: help
 help:  ## Print the help documentation
 	@grep -E '^[a-zA-Z0-9_-\]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -55,12 +43,5 @@ vet: ## Vet Go source code
 	go vet $$(go list ./... )
 
 .PHONY: test_go
-test_go: ## Run Go tests
+test: ## Run Go tests
 	bash scripts/test.sh
-
-#
-# Clean
-#
-
-clean:
-	rm -fr bin

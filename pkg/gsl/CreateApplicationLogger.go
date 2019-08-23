@@ -17,7 +17,7 @@ import (
 )
 
 import (
-	"github.com/spatialcurrent/go-reader-writer/grw"
+	"github.com/spatialcurrent/go-reader-writer/pkg/grw"
 )
 
 // CreateApplicationLoggerInput holds the input for the CreateApplicationLogger function..
