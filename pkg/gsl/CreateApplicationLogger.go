@@ -34,7 +34,13 @@ type CreateApplicationLoggerInput struct {
 // If there is an error during creation then the program prints the error and exits with exit code 1.
 func CreateApplicationLogger(input *CreateApplicationLoggerInput) *Logger {
 
-	errorWriter, err := grw.WriteToResource(input.ErrorDestination, input.ErrorCompression, true, nil)
+	errorWriter, err := grw.WriteToResource(&grw.WriteToResourceInput{
+		Uri:      input.ErrorDestination,
+		Alg:      input.ErrorCompression,
+		Dict:     grw.NoDict,
+		Append:   true,
+		S3Client: nil,
+	})
 	if err != nil {
 		fmt.Println(errors.Wrap(err, "error creating error writer"))
 		os.Exit(1)
@@ -72,7 +78,13 @@ func CreateApplicationLogger(input *CreateApplicationLoggerInput) *Logger {
 				levels["debug"] = 0
 			}
 		} else {
-			infoWriter, err := grw.WriteToResource(input.InfoDestination, input.InfoCompression, true, nil)
+			infoWriter, err := grw.WriteToResource(&grw.WriteToResourceInput{
+				Uri:      input.InfoDestination,
+				Alg:      input.InfoCompression,
+				Dict:     grw.NoDict,
+				Append:   true,
+				S3Client: nil,
+			})
 			if err != nil {
 				errorWriter.WriteError(errors.Wrap(err, "error creating log writer")) // #nosec
 				errorWriter.Close()                                                   // #nosec
